@@ -6,14 +6,14 @@ export const TextBox = () => {
     const [words, setWords] = useState(""); 
     const [numWords, setNumWords] = useState(20);
     useEffect(() => {
-        fetchWords(numWords);
+        fetchWords(numWords, setWords);
     }, []);
 
     return (
         <>
             <button
                 id="generate-words-button"
-                onClick={() => fetchWords(numWords)}
+                onClick={() => fetchWords(numWords, setWords)}
             >
                 Generate New Challenge
             </button>
@@ -27,9 +27,18 @@ export const TextBox = () => {
     )
 }
 
-const fetchWords = (numWords) => {
-    fetch(`http://127.0.0.1:8000/words/get_words/${numWords}/`)
-        .then(res => res.json()) 
-        .then(data => console.log(data))
-        .catch(error => console.error(error));
+const fetchWords = (numWords, setWords) => {
+    fetch("http://127.0.0.1:4000/auth/register", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+            email: "tanreiyi@gmail.com", 
+            password: "testing"
+        })
+    })
+    .then(res => res.json())
+    .then(data => console.log(data)) 
+    .catch(error => console.error(error))
 }
