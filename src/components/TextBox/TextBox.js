@@ -28,17 +28,4 @@ export const TextBox = () => {
 }
 
 const fetchWords = (numWords, setWords) => {
-    fetch("http://127.0.0.1:4000/auth/register", {
-        method: "POST",
-        headers: {
-            "Content-Type": "application/json"
-        },
-        body: JSON.stringify({
-            email: "tanreiyi@gmail.com", 
-            password: "testing"
-        })
-    })
-    .then(res => res.json())
-    .then(data => console.log(data)) 
-    .catch(error => console.error(error))
 }
