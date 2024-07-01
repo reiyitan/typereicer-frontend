@@ -1,0 +1,6 @@
+.warning-div {
+    min-height: 10px;
+    height: 10px;
+    font-size: var(--fontsize-small);
+    color: var(--clr-txt-red);
+}

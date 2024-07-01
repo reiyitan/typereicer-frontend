@@ -1,9 +1,19 @@
 * {
     box-sizing: border-box;
+    font-family: Montserrat;
 }
 
 :root {
-    --background-color: #323949;
-    --textbox-color: #40445a;
-    background-color: var(--background-color);
+    --clr-bg: rgb(37, 37, 37);
+    --clr-bg-lt: rgb(45, 45, 45);
+    --clr-txt-primary: rgb(255, 255, 255);
+    --clr-txt-primary-hover: rgb(220, 220, 220);
+    --clr-highlight: rgb(210, 190, 250); 
+    --clr-highlight-hover: rgb(175, 155, 215);
+    --clr-txt-red: rgb(216, 93, 93);
+    --border-radius: 5px;
+    --fontsize-big: 30px; 
+    --fontsize-med: 20px;
+    --fontsize-small: 12px;
+    background-color: var(--clr-bg);
 }

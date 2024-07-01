@@ -1,10 +1,18 @@
 import "./App.css"; 
-import { TopBar, TextBox } from "./components"; 
+import { createBrowserRouter, RouterProvider } from "react-router-dom";
+import { LoginPage, RegisterPage, HomePage } from "./pages";
+
+const router = createBrowserRouter([
+    {
+        path: "/",
+        element: <RegisterPage />
+    },
+])
 
 function App() {
-  return (
-    <TextBox />
-  );
+    return (
+        <RouterProvider router={router} />
+    );
 }
 
 export default App;
