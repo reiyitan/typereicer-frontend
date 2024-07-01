@@ -2,6 +2,7 @@ import React from "react";
 import { useState } from "react";
 import "../authpages.css";
 import { TextForm, Button, WarningMessage } from "../../components";
+import { Link } from "react-router-dom"; 
 
 export const RegisterPage = () => {
     const [username, setUsername] = useState("");
@@ -55,8 +56,12 @@ export const RegisterPage = () => {
             />
             <Button 
                 onClick={handleRegister} 
-                value="Sign Up"
+                value="Sign up"
             />
+            <span className="redirect-link-container">
+                Already have an account?
+                <Link className="redirect-link" to="/login">Sign in</Link>
+            </span>
         </div>
     );
 }
