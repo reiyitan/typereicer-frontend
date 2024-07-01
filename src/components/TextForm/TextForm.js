@@ -16,7 +16,7 @@ const slashEye = (setShowVal) => (
     </svg>
 );
 
-export const TextForm = ({value, setValue, placeholder, type}) => {
+export const TextForm = ({value, setValue, label, type}) => {
     const [showVal, setShowVal] = useState(false);
 
     const handleInput = (e) => {
@@ -24,10 +24,10 @@ export const TextForm = ({value, setValue, placeholder, type}) => {
     }
     return (
         <div className="textform-container">
+            <h2 className="textform-label">{label}</h2>
             <input 
                 className="textform"
                 style={{"paddingRight": (type === "password" ? "25px" : "")}}
-                placeholder={placeholder}
                 value={value}
                 onChange={handleInput}
                 type={!type || showVal ? "text": type}

@@ -17,3 +17,9 @@
     --fontsize-small: 12px;
     background-color: var(--clr-bg);
 }
+
+#page-title {
+    color: var(--clr-txt-primary);
+    font-weight: 550;
+    padding-left: 25px;
+}

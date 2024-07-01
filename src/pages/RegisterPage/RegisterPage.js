@@ -1,10 +1,35 @@
 import React from "react"; 
-import { useState } from "react";
+import { useState, useEffect, useContext } from "react";
 import "../authpages.css";
 import { TextForm, Button, WarningMessage } from "../../components";
-import { Link } from "react-router-dom"; 
+import { Link, useNavigate } from "react-router-dom"; 
+import { AuthContext } from "../../AuthContext";
 
 export const RegisterPage = () => {
+    const { authState } = useContext(AuthContext);
+    const navigate = useNavigate(); 
+    useEffect(() => {
+        if (authState) {
+            fetch("http://localhost:4000/auth/verify", {
+                method: "POST", 
+                headers: {
+                    "Content-Type": "application/json" 
+                },
+                body: JSON.stringify({
+                    token: authState
+                })
+            })
+            .then(res => res.json())
+            .then(data => {
+                if (data.verified) {
+                    //get fb data from uid and pass data to navigate
+                    navigate("/home");
+                }
+            })
+            .catch(error => console.error(error)); 
+        }
+    }, [authState]);
+
     const [username, setUsername] = useState("");
     const [email, setEmail] = useState(""); 
     const [pass, setPass] = useState(""); 
@@ -50,6 +75,12 @@ export const RegisterPage = () => {
                     case "auth/email-already-in-use":
                         setWarningMsg("Email already in use");
                         break;
+                    case "auth/invalid-email":
+                        setWarningMsg("Enter a valid email");
+                        break;
+                    case "auth/weak-password":
+                        setWarningMsg("Password should be at least 6 characters");
+                        break;
                     default:
                         setWarningMsg("There was an unexpected issue logging in");
                         break;
@@ -64,23 +95,23 @@ export const RegisterPage = () => {
             <TextForm 
                 value={username}
                 setValue={setUsername}
-                placeholder="Username"
+                label="Username"
             />
             <TextForm 
                 value={email}
                 setValue={setEmail}
-                placeholder="Email"
+                label="Email"
             />
             <TextForm 
                 value={pass}
                 setValue={setPass}
-                placeholder="Password"
+                label="Password"
                 type="password"
             />
             <TextForm 
                 value={confPass}
                 setValue={setConfPass}
-                placeholder="Confirm Password"
+                label="Confirm Password"
                 type="password"
             />
             <WarningMessage 
