@@ -1,4 +1,4 @@
-#center-block {
+.center-block {
     position: absolute; 
     display: flex;
     flex-direction: column;
@@ -15,4 +15,15 @@
 .light-header {
     font-weight: 550;
     margin-bottom: 20px;
+    align-self: center;
 }
+
+.redirect-link-container {
+    margin-top: 20px;
+    align-self: center;
+} 
+
+.redirect-link {
+    margin-left: 5px;
+    color: var(--clr-highlight);
+} 
