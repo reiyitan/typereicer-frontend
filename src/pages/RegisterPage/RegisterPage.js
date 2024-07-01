@@ -22,11 +22,44 @@ export const RegisterPage = () => {
         }
         else {
             setWarningMsg("");
+            fetch("http://127.0.0.1:4000/auth/register", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({
+                    username: username,
+                    email: email, 
+                    password: pass
+                })
+            })
+            .then(async res => {
+                const data = await res.json();
+                if (!res.ok) {
+                    throw new Error(data.error);
+                }
+                else {
+                    return data;
+                }
+            })
+            .then(data => {
+                console.log(data)
+            }) 
+            .catch(error => {
+                switch(error.message) {
+                    case "auth/email-already-in-use":
+                        setWarningMsg("Email already in use");
+                        break;
+                    default:
+                        setWarningMsg("There was an unexpected issue logging in");
+                        break;
+                }
+            })
         }   
     } 
 
     return (
-        <div id="center-block">
+        <div className="center-block">
             <h1 className="light-header">Create an account</h1>
             <TextForm 
                 value={username}
