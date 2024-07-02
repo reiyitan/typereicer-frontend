@@ -4,10 +4,11 @@ import "../authpages.css";
 import { TextForm, Button, WarningMessage } from "../../components";
 import { Link, useNavigate } from "react-router-dom"; 
 import { AuthContext } from "../../AuthContext";
+import { register } from "../../functions";
 
 export const RegisterPage = () => {
-    const { authState } = useContext(AuthContext);
-    const navigate = useNavigate(); 
+    const { authState, setAuthState } = useContext(AuthContext);
+    const navigate = useNavigate();
     useEffect(() => {
         if (authState) {
             fetch("http://localhost:4000/auth/verify", {
@@ -21,8 +22,11 @@ export const RegisterPage = () => {
             })
             .then(res => res.json())
             .then(data => {
-                if (data.verified) {
-                    //get fb data from uid and pass data to navigate
+                if (!data.verified) {
+                    localStorage.remove("token"); 
+                    setAuthState(null);
+                }
+                else {
                     navigate("/home");
                 }
             })
@@ -36,9 +40,13 @@ export const RegisterPage = () => {
     const [confPass, setConfPass] = useState("");
     const [warningMsg, setWarningMsg] = useState(""); 
 
-    const handleRegister = () => {
+    const handleRegister = async () => {
         if (!username || !email || !pass || !confPass) {
             setWarningMsg("Please fill out all fields");
+            return;
+        }
+        else if (username.includes(" ")) {
+            setWarningMsg("No spaces allowed in username");
             return;
         }
         else if (pass !== confPass) {
@@ -47,30 +55,14 @@ export const RegisterPage = () => {
         }
         else {
             setWarningMsg("");
-            fetch("http://127.0.0.1:4000/auth/register", {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json"
-                },
-                body: JSON.stringify({
-                    username: username,
-                    email: email, 
-                    password: pass
-                })
-            })
-            .then(async res => {
-                const data = await res.json();
-                if (!res.ok) {
-                    throw new Error(data.error);
-                }
-                else {
-                    return data;
-                }
-            })
-            .then(data => {
-                console.log(data)
-            }) 
-            .catch(error => {
+            try {
+                const user = await register(username, email, pass);
+                const token = user.stsTokenManager.accessToken;
+                localStorage.setItem("token", token);
+                setAuthState(token); 
+                navigate("/home");
+            }
+            catch (error) { 
                 switch(error.message) {
                     case "auth/email-already-in-use":
                         setWarningMsg("Email already in use");
@@ -82,10 +74,10 @@ export const RegisterPage = () => {
                         setWarningMsg("Password should be at least 6 characters");
                         break;
                     default:
-                        setWarningMsg("There was an unexpected issue logging in");
+                        setWarningMsg("An unexpected error occurred while signing up");
                         break;
                 }
-            })
+            }
         }   
     } 
 
