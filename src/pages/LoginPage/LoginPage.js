@@ -1,39 +1,11 @@
 import React from "react"; 
-import { useState, useEffect, useContext } from "react";
+import { useState } from "react";
 import "../authpages.css";
-import { TextForm, Button, WarningMessage } from "../../components";
-import { Link, useNavigate } from "react-router-dom";
-import { AuthContext } from "../../AuthContext";
-import { login } from "../../functions";
+import { TextForm, Button, WarningMessage, useFirebase } from "../../components";
+import { Link, Navigate } from "react-router-dom";
 
 export const LoginPage = () => {
-    const { authState, setAuthState } = useContext(AuthContext);
-    const navigate = useNavigate();
-    useEffect(() => {
-        if (authState) {
-            fetch("http://localhost:4000/auth/verify", {
-                method: "POST", 
-                headers: {
-                    "Content-Type": "application/json" 
-                },
-                body: JSON.stringify({
-                    token: authState
-                })
-            })
-            .then(res => res.json())
-            .then(data => {
-                if (!data.verified) {
-                    localStorage.remove("token"); 
-                    setAuthState(null);
-                }
-                else {
-                    navigate("/home");
-                }
-            })
-            .catch(error => console.error(error)); 
-        }
-    }, [authState]);
-
+    const { token, login } = useFirebase();
     const [email, setEmail] = useState("");
     const [pass, setPass] = useState(""); 
     const [warningMsg, setWarningMsg] = useState("");
@@ -46,10 +18,7 @@ export const LoginPage = () => {
             setWarningMsg("");
             try {
                 const user = await login(email, pass, "alba");
-                const token = user.stsTokenManager.accessToken;
-                localStorage.setItem("token", token);
-                setAuthState(token);
-                navigate("/home");
+                console.log("logged in:", user);
             }
             catch (error) {
                 switch (error.message) {
@@ -66,6 +35,10 @@ export const LoginPage = () => {
             }
         }
     } 
+
+    if (token) {
+        return <Navigate to="/home" />
+    }
 
     return (
         <div className="center-block">
