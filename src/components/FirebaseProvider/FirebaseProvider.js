@@ -23,18 +23,13 @@ const FirebaseContext = createContext();
 export const FirebaseProvider = ({ children }) => {
     const [token, setToken] = useState(localStorage.getItem("token") || null);
 
-    const login = async (email, password, username) => {
+    const login = async (email, password) => {
         try {
             const userCredential = await signInWithEmailAndPassword(auth, email, password);
             const user = userCredential.user; 
             const token = user.stsTokenManager.accessToken;
             setToken(token);
             localStorage.setItem("token", token);
-            await setDoc(doc(db, "users", user.uid), {
-                username: username,
-                fastest25: 16,
-                fastest50: 16
-            });
             return user;
         }
         catch (error) {
