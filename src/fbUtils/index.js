@@ -1,1 +1,0 @@
-export { fbApp, db } from "./fbApp";
