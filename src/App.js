@@ -1,42 +1,30 @@
 import "./App.css"; 
 import React from "react";
-import { useState, useEffect } from "react";
-import { createBrowserRouter, RouterProvider } from "react-router-dom";
+import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { LoginPage, RegisterPage, HomePage } from "./pages";
-import { AuthContext } from "./AuthContext";
-
-const router = createBrowserRouter([
-    {
-        path: "/",
-        element: <LoginPage />
-    },
-    {
-        path: "/login",
-        element: <LoginPage />
-    },
-    {
-        path: "/register",
-        element: <RegisterPage />
-    },
-    {
-        path: "/home",
-        element: <HomePage />
-    }
-])
+import { PrivateRoute, FirebaseProvider } from "./components";
 
 function App() {
-    const [authState, setAuthState] = useState(null);
-    useEffect(() => {
-        const token = localStorage.getItem("token"); 
-        setAuthState(token);
-    }, []); 
-
     return (
         <>
             <h1 id="page-title">TypeReicer</h1>
-            <AuthContext.Provider value={{authState, setAuthState}}>
-                <RouterProvider router={router} />
-            </AuthContext.Provider>
+            <FirebaseProvider>
+                <BrowserRouter>
+                    <Routes>
+                        <Route path="/" element={<LoginPage />} />
+                        <Route path="/login" element={<LoginPage />} />
+                        <Route path="/register" element={<RegisterPage />} />
+                        <Route 
+                            path="/home" 
+                            element={
+                                <PrivateRoute>
+                                    <HomePage />
+                                </PrivateRoute>
+                            } 
+                        />
+                    </Routes>
+                </BrowserRouter>
+            </FirebaseProvider>
         </>
     );
 }
