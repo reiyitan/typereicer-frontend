@@ -23,3 +23,7 @@
     font-weight: 550;
     padding-left: 25px;
 }
+
+.shadow {
+    box-shadow: 0 5px 5px rgb(22, 22, 22);
+}

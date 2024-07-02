@@ -41,7 +41,7 @@ export const LoginPage = () => {
     }
 
     return (
-        <div className="center-block">
+        <div className="center-block shadow">
             <h1 className="light-header">Sign in</h1>
             <TextForm 
                 value={email} 

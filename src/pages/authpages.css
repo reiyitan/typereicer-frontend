@@ -10,7 +10,6 @@
     border-radius: var(--border-radius);
     padding: 25px 100px 50px 100px;
     color: var(--clr-txt-primary);
-    box-shadow: 0 5px 5px rgb(22, 22, 22);
 }
 
 .light-header {

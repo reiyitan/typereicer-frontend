@@ -1,11 +1,11 @@
 import React from "react"; 
 import "./HomePage.css";
-import { TextBox } from "../../components/TextBox";
+import { TextGame } from "../../components/TextGame";
 
 export const HomePage = () => {
     return (
         <>
-            <TextBox />
+            <TextGame />
         </>
     );
 }

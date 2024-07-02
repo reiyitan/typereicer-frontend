@@ -55,7 +55,7 @@ export const RegisterPage = () => {
     }
 
     return (
-        <div className="center-block">
+        <div className="center-block shadow">
             <h1 className="light-header">Create an account</h1>
             <TextForm 
                 value={username}
