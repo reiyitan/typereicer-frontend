@@ -1,4 +1,5 @@
 import React from "react";
+import "./PrivateRoute.css";
 import { useState, useEffect } from "react";
 import { Navigate } from "react-router-dom"; 
 import { useFirebase } from "../FirebaseProvider";
