@@ -23,7 +23,7 @@ export const PrivateRoute = ({ children }) => {
             .then(res => res.json())
             .then(data => {
                 if (!data.verified) {
-                    localStorage.remove("token"); 
+                    localStorage.removeItem("token"); 
                     setToken(null);
                     setIsVerified(false);
                     setIsLoading(false);
@@ -33,7 +33,10 @@ export const PrivateRoute = ({ children }) => {
                     setIsLoading(false);
                 }
             })
-            .catch(error => console.error(error)); 
+            .catch(error => {
+                console.error(error);
+                setIsLoading(false);
+            }); 
         }
         else {
             setIsLoading(false);
@@ -45,8 +48,9 @@ export const PrivateRoute = ({ children }) => {
             <div id="loading-div">Loading...</div>
         );
     }
-    
-    return (
-        isVerified ? children : <Navigate to="/login" />
-    );
+    else {
+        return (
+            isVerified ? children : <Navigate to="/login" />
+        );
+    }
 } 
