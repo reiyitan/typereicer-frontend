@@ -1,7 +1,8 @@
 import React from "react"; 
 import { useState } from "react";
 import "../authpages.css";
-import { TextForm, Button, WarningMessage, useFirebase } from "../../components";
+import { TextForm, Button, WarningMessage } from "../../components";
+import { useFirebase } from "../../ContextProviders";
 import { Link, Navigate } from "react-router-dom"; 
 
 export const RegisterPage = () => {

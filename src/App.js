@@ -2,7 +2,8 @@ import "./App.css";
 import React from "react";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { LoginPage, RegisterPage, HomePage } from "./pages";
-import { PrivateRoute, FirebaseProvider } from "./components";
+import { PrivateRoute } from "./components";
+import { FirebaseProvider } from "./ContextProviders";
 
 function App() {
     return (

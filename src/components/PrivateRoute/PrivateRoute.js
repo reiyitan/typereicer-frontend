@@ -2,7 +2,7 @@ import React from "react";
 import "./PrivateRoute.css";
 import { useState, useEffect } from "react";
 import { Navigate } from "react-router-dom"; 
-import { useFirebase } from "../FirebaseProvider";
+import { useFirebase } from "../../ContextProviders";
 
 export const PrivateRoute = ({ children }) => {
     const { token, setToken } = useFirebase();
