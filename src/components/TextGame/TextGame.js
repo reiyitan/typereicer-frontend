@@ -66,7 +66,7 @@ export const TextGame = () => {
 
     const [cursorPosition, setCursorPosition] = useState({ left: 0, top: 0 });
     const containerRef = useRef(null);
-    const inputRef = useState(null); 
+    const buttonRef = useRef(null);
 
     useEffect(() => {
         fetchWords();
@@ -79,8 +79,8 @@ export const TextGame = () => {
             const charRect = charElement.getBoundingClientRect();
             const containerRect = container.getBoundingClientRect();
             const newLeft = () => {
-                if (currCharIndex === 0) return `${charRect.left - containerRect.left}px`;
-                else return `${charRect.right - containerRect.left}px`;
+                if (currCharIndex === 0) return `${charRect.left - containerRect.left - 1.7}px`;
+                else return `${charRect.right - containerRect.left - 1.7}px`;
             }
             const newBottom = () => `${containerRect.bottom - charRect.bottom + 2}px`;
             setCursorPosition({
@@ -111,6 +111,7 @@ export const TextGame = () => {
             setCurrCharIndex(0);
         }
         else if ((e.keyCode >= 48 && e.keyCode <= 57) || (e.keyCode >= 65 && e.keyCode <= 90)) {
+            if (typedWords[currWordIndex].length > words[currWordIndex].length + 5) return;
             const newTypedWords = [...typedWords]; 
             newTypedWords[currWordIndex] += e.key; 
             setTypedWords(newTypedWords);
@@ -118,10 +119,31 @@ export const TextGame = () => {
         }
     }
 
+    const [blurred, setBlurred] = useState(true);
+    const documentRef = useRef(document);
+    useEffect(() => {
+        const handleClick = (event) => {
+            if (!containerRef.current.contains(event.target) && !buttonRef.current.contains(event.target)) setBlurred(true);
+            else if (inputRef.current) inputRef.current.focus();
+        }
+        const currentDocument = documentRef.current
+        currentDocument.addEventListener("click", handleClick, true);
+        return () => {
+            currentDocument.removeEventListener("click", handleClick, true);
+        };
+    }, []); 
+
+    const inputRef = useRef(null); 
+    const handleOverlayClick = () => {
+        setBlurred(false);
+        if (inputRef.current) inputRef.current.focus();
+    }
+
     return (
         <div id="game-container">
             <input 
                 autoComplete="false"
+                id="game-input"
                 onPaste={(e) => e.preventDefault()}
                 onKeyDown={handleKeyDown}
                 type="text"
@@ -132,6 +154,13 @@ export const TextGame = () => {
                 className="shadow"
                 ref={containerRef}
             >
+                <div
+                    id="words-div-overlay"
+                    className={blurred ? "" : "hidden"}
+                    onClick={handleOverlayClick}
+                >
+                    <span id="focus-message">Click here to focus</span>
+                </div>
                 {
                     indexArray.map((index) => (
                         <Word 
@@ -150,6 +179,7 @@ export const TextGame = () => {
                 id="refresh-button"
                 className="shadow"
                 onClick={fetchWords}
+                ref={buttonRef}
             >
                 {refreshIcon}
             </button>
