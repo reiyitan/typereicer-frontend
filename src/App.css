@@ -1,13 +1,17 @@
 * {
     box-sizing: border-box;
-    font-family: Montserrat;
 }
 
 :root {
     --clr-bg: rgb(37, 37, 37);
-    --clr-bg-lt: rgb(45, 45, 45);
+    --clr-bg-lt: rgb(55, 55, 55);
+    --clr-bg-lt-hover: rgb(45, 45, 45);
     --clr-txt-primary: rgb(255, 255, 255);
     --clr-txt-primary-hover: rgb(220, 220, 220);
+    --clr-game-unattempted: rgb(200, 200, 200);
+    --clr-game-incorrect: rgb(216, 93, 93);
+    --clr-game-correct: rgb(139, 209, 151);
+    --clr-game-extra: rgb(248, 238, 152);
     --clr-highlight: rgb(210, 190, 250); 
     --clr-highlight-hover: rgb(175, 155, 215);
     --clr-txt-red: rgb(216, 93, 93);
@@ -22,6 +26,7 @@
     color: var(--clr-txt-primary);
     font-weight: 550;
     padding-left: 25px;
+    font-family: Montserrat;
 }
 
 .shadow {
