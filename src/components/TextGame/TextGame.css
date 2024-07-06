@@ -1,0 +1,73 @@
+#game-container {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    max-width: 65%;
+}
+
+#words-div {
+    position: relative;
+    display: inline-block;
+    background-color: var(--clr-bg-lt);
+    border-radius: 5px; 
+    max-width: 100%;
+    padding: 25px 50px 25px 50px;
+    white-space: normal;
+    overflow-wrap: break-word;
+    font-variant-ligatures: none;
+    font-family: "Inconsolata", monospace;
+}
+
+#refresh-button {
+    position: relative;
+    margin: 15px 0 0 0;
+    left: 50%; 
+    transform: translateX(-50%);
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    border: none;
+    background-color: var(--clr-bg-lt);
+    transition: background-color ease 0.3s;
+}
+
+#refresh-button:hover {
+    background-color: var(--clr-bg-lt-hover);
+}
+
+#refresh-icon {
+    color: var(--clr-highlight);
+    width: 20px;
+    height: 20px;
+}
+
+.word {
+    margin-right: 15px;
+    font-size: 30px;
+    white-space: nowrap;
+    transition: font-size ease 0.3s;
+}
+
+.unattempted {
+    color: var(--clr-game-unattempted);
+}
+
+.correct {
+    color: var(--clr-game-correct); 
+}
+
+.incorrect {
+    color: var(--clr-game-incorrect);
+}
+
+.extra {
+    color: var(--clr-game-extra);
+}
+
+.cursor {
+    position: absolute;
+    width: 2px;
+    height: 28px;
+    background-color: var(--clr-highlight);
+}
