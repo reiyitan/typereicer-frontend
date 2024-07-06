@@ -55,15 +55,15 @@ const Word = ({thisWord, thisWordIndex}) => {
 export const TextGame = () => {
     const {
         words,
-        typedWords, setTypedWords,
+        typedWords,
         numWords, setNumWords,
         fetchWords,
-        currWordIndex, setCurrWordIndex,
-        currCharIndex, setCurrCharIndex,
+        currCharIndex,
         indexArray,
         prevCharRef, currCharRef,
-        gameRunning, setGameRunning,
-        handleGameEnd
+        setGameFocused,
+        handleKeyDown,
+        seconds
     } = useGame();
 
     const [cursorPosition, setCursorPosition] = useState({ left: 0, top: 0 });
@@ -93,41 +93,6 @@ export const TextGame = () => {
         }
     }, [prevCharRef, currCharRef, numWords])
 
-    const handleKeyDown = (e) => {
-        if (!gameRunning) return;
-        if (e.ctrlKey && e.key === "Backspace") {
-            const newTypedWords = [...typedWords]; 
-            newTypedWords[currWordIndex] = ""; 
-            setTypedWords(newTypedWords);
-            setCurrCharIndex(0);
-        }
-        else if (e.key === "Backspace") {
-            const targetWord = typedWords[currWordIndex]; 
-            const newTypedWord = targetWord.substring(0, targetWord.length - 1); 
-            const newTypedWords = [...typedWords]; 
-            newTypedWords[currWordIndex] = newTypedWord; 
-            setTypedWords(newTypedWords); 
-            setCurrCharIndex(prevIndex => Math.max(0, prevIndex - 1));
-        }
-        else if (e.key === " " ) {
-            if (typedWords[currWordIndex] === "") return;
-            setCurrWordIndex(prevIndex => prevIndex + 1);
-            setCurrCharIndex(0);
-        }
-        else if ((e.keyCode >= 48 && e.keyCode <= 57) || (e.keyCode >= 65 && e.keyCode <= 90)) {
-            if (currWordIndex >= numWords) {
-                handleGameEnd();
-                return;
-            }
-            if (typedWords[currWordIndex].length > words[currWordIndex].length + 5) return;
-            if (!gameRunning) setGameRunning(true);
-            const newTypedWords = [...typedWords]; 
-            newTypedWords[currWordIndex] += e.key; 
-            setTypedWords(newTypedWords);
-            setCurrCharIndex(prevIndex => prevIndex + 1);
-        }
-    }
-
     const [blurred, setBlurred] = useState(true);
     const documentRef = useRef(document);
     useEffect(() => {
@@ -149,29 +114,30 @@ export const TextGame = () => {
     const inputRef = useRef(null); 
     const handleOverlayClick = () => {
         setBlurred(false);
-        setGameRunning(true);
+        setGameFocused(true);
         if (inputRef.current) inputRef.current.focus();
-    }
-
-    const handleWordNumSwitch = (newNumWords) => {
-        setNumWords(newNumWords);
     }
 
     return (
         <div id="game-container">
-            <div id="game-controls" className="shadow" ref={controlsRef}>
-                <button
-                    className={`word-count-button word-count-button-25 ${numWords === 25 ? "word-count-button-active" : ""}`}
-                    onClick={() => handleWordNumSwitch(25)}
-                >
-                    25
-                </button>
-                <button
-                    className={`word-count-button word-count-button-50 ${numWords === 50 ? "word-count-button-active" : ""}`}
-                    onClick={() => handleWordNumSwitch(50)}
-                >
-                    50
-                </button>
+            <div id="game-topbar">
+                <div id="game-controls" className="shadow" ref={controlsRef}>
+                    <button
+                        className={`word-count-button word-count-button-25 ${numWords === 25 ? "word-count-button-active" : ""}`}
+                        onClick={() => setNumWords(25)}
+                    >
+                        25
+                    </button>
+                    <button
+                        className={`word-count-button word-count-button-50 ${numWords === 50 ? "word-count-button-active" : ""}`}
+                        onClick={() => setNumWords(50)}
+                    >
+                        50
+                    </button>
+                </div>
+                <div id="timer-container" className="shadow">
+                    <span id="timer">{seconds.toFixed(2)}s</span>
+                </div>
             </div>
             <input 
                 autoComplete="false"

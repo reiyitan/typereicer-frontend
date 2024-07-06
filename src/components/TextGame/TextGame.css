@@ -6,15 +6,19 @@
     max-width: 65%;
 }
 
+#game-topbar {
+    position: relative; 
+    height: 50px;
+    margin-bottom: 25px;
+}
 #game-controls {
     position: absolute;
     left: 0;
+    top: 0;
     height: 50px;
     width: 100px;
     background-color: var(--clr-bg-lt);
     border-radius: 5px;
-    position: relative;
-    margin-bottom: 25px;
 }
 
 .word-count-button {
@@ -49,6 +53,25 @@
     right: 0;
     border-top-right-radius: 5px;
     border-bottom-right-radius: 5px;
+}
+
+#timer-container {
+    position: absolute; 
+    right: 0;
+    top: 0;
+    border-radius: 5px;
+    height: 50px;
+    width: 100px;
+    background-color: var(--clr-bg-lt);
+}
+
+#timer {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    color: var(--clr-txt-primary);
+    font-family: "Montserrat";
 }
 
 #loading-words-div {
