@@ -56,17 +56,20 @@ export const TextGame = () => {
     const {
         words,
         typedWords, setTypedWords,
-        setNumWords,
+        numWords, setNumWords,
         fetchWords,
         currWordIndex, setCurrWordIndex,
         currCharIndex, setCurrCharIndex,
         indexArray,
-        prevCharRef, currCharRef
+        prevCharRef, currCharRef,
+        gameRunning, setGameRunning,
+        handleGameEnd
     } = useGame();
 
     const [cursorPosition, setCursorPosition] = useState({ left: 0, top: 0 });
     const containerRef = useRef(null);
     const buttonRef = useRef(null);
+    const controlsRef = useRef(null);
 
     useEffect(() => {
         fetchWords();
@@ -88,9 +91,10 @@ export const TextGame = () => {
                 bottom: newBottom()
             });
         }
-    }, [prevCharRef, currCharRef])
+    }, [prevCharRef, currCharRef, numWords])
 
     const handleKeyDown = (e) => {
+        if (!gameRunning) return;
         if (e.ctrlKey && e.key === "Backspace") {
             const newTypedWords = [...typedWords]; 
             newTypedWords[currWordIndex] = ""; 
@@ -111,7 +115,12 @@ export const TextGame = () => {
             setCurrCharIndex(0);
         }
         else if ((e.keyCode >= 48 && e.keyCode <= 57) || (e.keyCode >= 65 && e.keyCode <= 90)) {
+            if (currWordIndex >= numWords) {
+                handleGameEnd();
+                return;
+            }
             if (typedWords[currWordIndex].length > words[currWordIndex].length + 5) return;
+            if (!gameRunning) setGameRunning(true);
             const newTypedWords = [...typedWords]; 
             newTypedWords[currWordIndex] += e.key; 
             setTypedWords(newTypedWords);
@@ -123,7 +132,11 @@ export const TextGame = () => {
     const documentRef = useRef(document);
     useEffect(() => {
         const handleClick = (event) => {
-            if (!containerRef.current.contains(event.target) && !buttonRef.current.contains(event.target)) setBlurred(true);
+            if (
+                !containerRef.current.contains(event.target) 
+                && !buttonRef.current.contains(event.target) 
+                && !controlsRef.current.contains(event.target)
+            ) setBlurred(true);
             else if (inputRef.current) inputRef.current.focus();
         }
         const currentDocument = documentRef.current
@@ -136,11 +149,30 @@ export const TextGame = () => {
     const inputRef = useRef(null); 
     const handleOverlayClick = () => {
         setBlurred(false);
+        setGameRunning(true);
         if (inputRef.current) inputRef.current.focus();
+    }
+
+    const handleWordNumSwitch = (newNumWords) => {
+        setNumWords(newNumWords);
     }
 
     return (
         <div id="game-container">
+            <div id="game-controls" className="shadow" ref={controlsRef}>
+                <button
+                    className={`word-count-button word-count-button-25 ${numWords === 25 ? "word-count-button-active" : ""}`}
+                    onClick={() => handleWordNumSwitch(25)}
+                >
+                    25
+                </button>
+                <button
+                    className={`word-count-button word-count-button-50 ${numWords === 50 ? "word-count-button-active" : ""}`}
+                    onClick={() => handleWordNumSwitch(50)}
+                >
+                    50
+                </button>
+            </div>
             <input 
                 autoComplete="false"
                 id="game-input"
@@ -154,21 +186,26 @@ export const TextGame = () => {
                 className="shadow"
                 ref={containerRef}
             >
-                <div
-                    id="words-div-overlay"
-                    className={blurred ? "" : "hidden"}
-                    onClick={handleOverlayClick}
-                >
-                    <span id="focus-message">Click here to focus</span>
-                </div>
                 {
-                    indexArray.map((index) => (
-                        <Word 
+                    indexArray.length <= words.length &&
+                    <div
+                        id="words-div-overlay"
+                        className={blurred ? "" : "hidden"}
+                        onClick={handleOverlayClick}
+                    >
+                        <span id="focus-message">Click here to focus</span>
+                    </div>
+                }
+                {
+                    indexArray.length <= words.length 
+                    ? (indexArray.map((index) => (
+                         <Word 
                             thisWord={words[index] + typedWords[index].substring(words[index].length)} 
                             thisWordIndex={index}
                             key={index}
                         />
-                    ))
+                    )))
+                    : <div id="loading-words-div"><span id="loading-words-msg">Loading words...</span></div>
                 }
                 <div
                     className="cursor"

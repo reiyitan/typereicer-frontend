@@ -6,6 +6,66 @@
     max-width: 65%;
 }
 
+#game-controls {
+    position: absolute;
+    left: 0;
+    height: 50px;
+    width: 100px;
+    background-color: var(--clr-bg-lt);
+    border-radius: 5px;
+    position: relative;
+    margin-bottom: 25px;
+}
+
+.word-count-button {
+    position: absolute;
+    background-color: var(--clr-bg-lt);
+    border: none;
+    width: 50%;
+    height: 100%;
+    font-family: "Inconsolata", monospace;
+    font-size: 20px;
+    color: var(--clr-txt-primary);
+    transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+.word-count-button:hover {
+    background-color: var(--clr-bg-lt-hover);
+    color: var(--clr-txt-primary-hover);
+}
+
+.word-count-button-25 {
+    left: 0;
+    border-top-left-radius: 5px;
+    border-bottom-left-radius: 5px;
+}
+
+.word-count-button-active {
+    color: var(--clr-highlight);
+    background-color: var(--clr-bg-lt-hover);
+}
+
+.word-count-button-50 {
+    right: 0;
+    border-top-right-radius: 5px;
+    border-bottom-right-radius: 5px;
+}
+
+#loading-words-div {
+    position: relative; 
+    width: 100px;
+    height: 100px;
+}
+
+#loading-words-msg {
+    position: absolute; 
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    font: "Montserraf";
+    color: var(--clr-txt-primary);
+}
+
 #words-div {
     position: relative;
     display: inline-block;
