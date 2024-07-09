@@ -3,14 +3,14 @@
     display: flex;
     flex-direction: column;
     left: 50%;
-    top: 50%;
-    transform: translate(-50%, -50%);
+    top: 200px;
+    transform: translateX(-50%);
     width: 500px;
     background-color: var(--clr-bg-lt);
     border-radius: var(--border-radius);
     padding: 25px 100px 50px 100px;
     color: var(--clr-txt-primary);
-    font-family: "Montserrat";
+    font-family: Montserrat;
 }
 
 .light-header {
