@@ -1,5 +1,5 @@
 import React from "react";
-import { useState, useEffect, useRef } from "react"; 
+import { useState, useEffect, useLayoutEffect, useRef } from "react"; 
 import { useGame } from "../../ContextProviders";
 import "./TextGame.css";
 
@@ -8,6 +8,19 @@ const refreshIcon = (
         <path fillRule="evenodd" d="M15.312 11.424a5.5 5.5 0 0 1-9.201 2.466l-.312-.311h2.433a.75.75 0 0 0 0-1.5H3.989a.75.75 0 0 0-.75.75v4.242a.75.75 0 0 0 1.5 0v-2.43l.31.31a7 7 0 0 0 11.712-3.138.75.75 0 0 0-1.449-.39Zm1.23-3.723a.75.75 0 0 0 .219-.53V2.929a.75.75 0 0 0-1.5 0V5.36l-.31-.31A7 7 0 0 0 3.239 8.188a.75.75 0 1 0 1.448.389A5.5 5.5 0 0 1 13.89 6.11l.311.31h-2.432a.75.75 0 0 0 0 1.5h4.243a.75.75 0 0 0 .53-.219Z" clipRule="evenodd" />
     </svg>
 );
+
+const useWindowSize = () => {
+    const [windowSize, setWindowSize] = useState([0, 0]);
+    useLayoutEffect(() => {
+        const updateSize = () => {
+            setWindowSize([window.innerWidth, window.innerHeight]);
+        }
+        window.addEventListener("resize", updateSize); 
+        updateSize();
+        return () => window.removeEventListener("resize", updateSize);
+    }, []);
+    return windowSize;
+}
 
 const Char = ({char, charIndex, thisWordIndex}) => {
     const { words, currWordIndex, currCharIndex, typedWords, setPrevCharRef, setCurrCharRef } = useGame();
@@ -66,6 +79,7 @@ export const TextGame = () => {
         seconds
     } = useGame();
 
+    const windowSize = useWindowSize();
     const [cursorPosition, setCursorPosition] = useState({ left: 0, top: 0 });
     const containerRef = useRef(null);
     const buttonRef = useRef(null);
@@ -75,7 +89,7 @@ export const TextGame = () => {
         fetchWords();
     }, []);
 
-    useEffect(() => {
+    useLayoutEffect(() => {
         const charElement = (currCharIndex === 0) ? currCharRef : prevCharRef;
         const container = containerRef.current; 
         if (charElement && container) {
@@ -91,7 +105,7 @@ export const TextGame = () => {
                 bottom: newBottom()
             });
         }
-    }, [prevCharRef, currCharRef, numWords])
+    }, [prevCharRef, currCharRef, numWords, windowSize])
 
     const [blurred, setBlurred] = useState(true);
     const documentRef = useRef(document);
