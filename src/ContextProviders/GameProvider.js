@@ -1,5 +1,6 @@
 import React from "react"; 
 import { useState, createContext, useContext, useEffect } from "react"; 
+import { useFirebase } from "./FirebaseProvider";
 
 const defaultNumWords = 25; 
 const GameContext = createContext();
@@ -18,6 +19,7 @@ export const GameProvider = ({children}) => {
     const [showResults, setShowResults] = useState(false);
     const [wpm, setWpm] = useState(0); 
     const [acc, setAcc] = useState(0);
+    const { updateMetrics } = useFirebase();
 
     const calculateResults = () => {
         let correctChars = 0; 
@@ -30,7 +32,6 @@ export const GameProvider = ({children}) => {
         const minutes = seconds / 60; 
         const wpm = approxNumWords / minutes;
         const acc = correctChars / totalChars * 100;
-        console.log(typedWords, words);
         return {
             wpm: wpm.toFixed(2),
             acc: acc.toFixed(2)
@@ -43,6 +44,7 @@ export const GameProvider = ({children}) => {
         setWpm(wpm); 
         setAcc(acc);
         setShowResults(true);
+        updateMetrics(wpm, acc, numWords);
     }
 
     useEffect(() => {

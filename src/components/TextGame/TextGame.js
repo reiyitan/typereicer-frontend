@@ -73,6 +73,7 @@ const ResultPanel = () => {
             <p className="results-value">{wpm}</p>
             <h1 className="results-category">Accuracy</h1>
             <p className="results-value">{acc}%</p>
+            {acc < 70 && <p id="invalid-test-msg">*Test invalid due to low accuracy</p>}
         </div>
     );
 }
@@ -89,7 +90,7 @@ export const TextGame = () => {
         setGameFocused,
         handleKeyDown,
         seconds,
-        showResults, setShowResults
+        showResults
     } = useGame();
 
     const windowSize = useWindowSize();
@@ -190,7 +191,7 @@ export const TextGame = () => {
                     </div>
                 }
                 {
-                    indexArray.length <= words.length  && !showResults
+                    indexArray.length <= words.length && !showResults
                     ? (indexArray.map((index) => (
                          <Word 
                             thisWord={words[index] + typedWords[index].substring(words[index].length)} 
