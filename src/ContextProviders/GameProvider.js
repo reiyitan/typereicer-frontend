@@ -1,7 +1,7 @@
 import React from "react"; 
 import { useState, createContext, useContext, useEffect } from "react"; 
 
-const defaultNumWords = 50; 
+const defaultNumWords = 25; 
 const GameContext = createContext();
 export const GameProvider = ({children}) => {
     const [words, setWords] = useState(new Array(defaultNumWords).fill("")); 
@@ -15,10 +15,34 @@ export const GameProvider = ({children}) => {
     const [gameFocused, setGameFocused] = useState(null);
     const [timerRunning, setTimerRunning] = useState(false);
     const [seconds, setSeconds] = useState(0);
+    const [showResults, setShowResults] = useState(false);
+    const [wpm, setWpm] = useState(0); 
+    const [acc, setAcc] = useState(0);
+
+    const calculateResults = () => {
+        let correctChars = 0; 
+        let totalChars = 0;
+        for (let i = 0; i < words.length; i++) {
+            if (words[i] === typedWords[i]) correctChars += words[i].length; 
+            totalChars += typedWords[i].length;
+        }
+        const approxNumWords = (correctChars / 4.7); //4.7 is avg length of word in english
+        const minutes = seconds / 60; 
+        const wpm = approxNumWords / minutes;
+        const acc = correctChars / totalChars * 100;
+        console.log(typedWords, words);
+        return {
+            wpm: wpm.toFixed(2),
+            acc: acc.toFixed(2)
+        };
+    }
 
     const handleGameEnd = () => {
         setTimerRunning(false);
-        console.log("game end");
+        const {wpm, acc} = calculateResults(); 
+        setWpm(wpm); 
+        setAcc(acc);
+        setShowResults(true);
     }
 
     useEffect(() => {
@@ -57,6 +81,7 @@ export const GameProvider = ({children}) => {
             setCurrCharRef(null);
             setTimerRunning(false); 
             setSeconds(0);
+            setShowResults(false);
         })
         .catch(error => console.error(error));
     }
@@ -94,12 +119,14 @@ export const GameProvider = ({children}) => {
             newTypedWords[currWordIndex] += e.key; 
             setTypedWords(newTypedWords);
             setCurrCharIndex(prevIndex => prevIndex + 1);
-            if (currWordIndex === numWords - 1 && newTypedWords[currWordIndex] === words[currWordIndex]) {
-                handleGameEnd(); 
-                return;
-            }
         }
     }
+
+    useEffect(() => {
+        if (typedWords.length === words.length && typedWords[words.length - 1] === words[words.length - 1] && typedWords[words.length - 1] !== "") {
+            handleGameEnd();
+        }
+    }, [typedWords, words]); 
 
     return (
         <GameContext.Provider
@@ -117,7 +144,9 @@ export const GameProvider = ({children}) => {
                 handleKeyDown,
                 handleGameEnd,
                 timerRunning, setTimerRunning, 
-                seconds, setSeconds
+                seconds, setSeconds,
+                showResults, setShowResults,
+                wpm, acc
             }}
         >
             {children}

@@ -65,6 +65,18 @@ const Word = ({thisWord, thisWordIndex}) => {
     );
 }
 
+const ResultPanel = () => {
+    const {wpm, acc} = useGame();
+    return (
+        <div id="results-div">
+            <h1 className="results-category">WPM</h1>
+            <p className="results-value">{wpm}</p>
+            <h1 className="results-category">Accuracy</h1>
+            <p className="results-value">{acc}%</p>
+        </div>
+    );
+}
+
 export const TextGame = () => {
     const {
         words,
@@ -76,7 +88,8 @@ export const TextGame = () => {
         prevCharRef, currCharRef,
         setGameFocused,
         handleKeyDown,
-        seconds
+        seconds,
+        showResults, setShowResults
     } = useGame();
 
     const windowSize = useWindowSize();
@@ -105,7 +118,7 @@ export const TextGame = () => {
                 bottom: newBottom()
             });
         }
-    }, [prevCharRef, currCharRef, numWords, windowSize])
+    }, [prevCharRef, currCharRef, currCharIndex, numWords, windowSize])
 
     const [blurred, setBlurred] = useState(true);
     const documentRef = useRef(document);
@@ -167,7 +180,7 @@ export const TextGame = () => {
                 ref={containerRef}
             >
                 {
-                    indexArray.length <= words.length &&
+                    indexArray.length <= words.length && !showResults &&
                     <div
                         id="words-div-overlay"
                         className={blurred ? "" : "hidden"}
@@ -177,7 +190,7 @@ export const TextGame = () => {
                     </div>
                 }
                 {
-                    indexArray.length <= words.length 
+                    indexArray.length <= words.length  && !showResults
                     ? (indexArray.map((index) => (
                          <Word 
                             thisWord={words[index] + typedWords[index].substring(words[index].length)} 
@@ -185,12 +198,17 @@ export const TextGame = () => {
                             key={index}
                         />
                     )))
+                    : showResults
+                    ? <ResultPanel />
                     : <div id="loading-words-div"><span id="loading-words-msg">Loading words...</span></div>
                 }
-                <div
-                    className="cursor"
-                    style={{ left: cursorPosition.left, bottom: cursorPosition.bottom }}
-                />
+                {
+                    !showResults &&
+                    <div
+                        className="cursor"
+                        style={{ left: cursorPosition.left, bottom: cursorPosition.bottom }}
+                    />
+                }
             </div>
             <button 
                 id="refresh-button"

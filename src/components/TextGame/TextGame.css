@@ -1,9 +1,9 @@
 #game-container {
     position: absolute;
     left: 50%;
-    top: 50%;
-    transform: translate(-50%, -50%);
-    max-width: 65%;
+    top: 250px;
+    transform: translateX(-50%);
+    width: 800px;
 }
 
 #game-topbar {
@@ -74,27 +74,13 @@
     font-family: "Inconsolata", monospace;
 }
 
-#loading-words-div {
-    position: relative; 
-    width: 100px;
-    height: 100px;
-}
-
-#loading-words-msg {
-    position: absolute; 
-    left: 50%;
-    top: 50%;
-    transform: translate(-50%, -50%);
-    font: "Montserraf";
-    color: var(--clr-txt-primary);
-}
-
 #words-div {
     position: relative;
     display: inline-block;
     background-color: var(--clr-bg-lt);
     border-radius: 5px; 
-    max-width: 100%;
+    width: 100%;
+    max-height: 400px;
     padding: 25px 50px 25px 50px;
     white-space: normal;
     overflow-wrap: break-word;
@@ -125,7 +111,7 @@
     left: 50%;
     top: 50%;
     transform: translate(-50%, -50%);
-    font-family: "Montserrat";
+    font-family: Montserrat;
     color: var(--clr-txt-primary);
     opacity: 1;
     transition: opacity 0.5s linear;
@@ -135,6 +121,41 @@
     opacity: 0;
 }
 
+#loading-words-div {
+    position: relative; 
+    width: 100%;
+    height: 100px;
+}
+
+#loading-words-msg {
+    position: absolute; 
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    font-family: Montserrat;
+    color: var(--clr-txt-primary);
+}
+
+#results-div {
+    position: relative; 
+    width: 100%;
+    height: 250px;
+}
+
+.results-category {
+    font-family: Montserrat;
+    font-weight: 550;
+    font-size: 25px;
+    color: var(--clr-txt-primary);
+    margin: 10px 0 0 0;
+}
+
+.results-value {
+    font-family: Montserrat;
+    font-size: 50px;
+    color: var(--clr-highlight);
+    margin: 0 0 45px 0;
+}
 
 #refresh-button {
     position: relative;
