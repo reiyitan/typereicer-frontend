@@ -33,8 +33,8 @@ export const GameProvider = ({children}) => {
         const wpm = approxNumWords / minutes;
         const acc = correctChars / totalChars * 100;
         return {
-            wpm: wpm.toFixed(2),
-            acc: acc.toFixed(2)
+            wpm: parseFloat(wpm.toFixed(2)),
+            acc: parseFloat(acc.toFixed(2))
         };
     }
 

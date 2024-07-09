@@ -83,7 +83,8 @@ export const FirebaseProvider = ({ children }) => {
                 ...data,
                 [`fastest${numWords}`]: newFastest,
                 [`fastest${numWords}_acc`]: newFastestAcc,
-                [`average_${numWords}_wpm`]: newAvg
+                [`average_${numWords}_wpm`]: newAvg,
+                [`total_${numWords}_completed`]: prevTotal + 1
             };
             await setDoc(doc(db, "users", uid), newMetrics);
         }
