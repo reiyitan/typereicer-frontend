@@ -90,7 +90,8 @@ export const TextGame = () => {
         setGameFocused,
         handleKeyDown,
         seconds,
-        showResults
+        showResults,
+        wordsLoading
     } = useGame();
 
     const windowSize = useWindowSize();
@@ -98,10 +99,6 @@ export const TextGame = () => {
     const containerRef = useRef(null);
     const buttonRef = useRef(null);
     const controlsRef = useRef(null);
-
-    useEffect(() => {
-        fetchWords();
-    }, []);
 
     useLayoutEffect(() => {
         const charElement = (currCharIndex === 0) ? currCharRef : prevCharRef;
@@ -204,7 +201,7 @@ export const TextGame = () => {
                     : <div id="loading-words-div"><span id="loading-words-msg">Loading words...</span></div>
                 }
                 {
-                    !showResults &&
+                    !showResults && !wordsLoading && 
                     <div
                         className="cursor"
                         style={{ left: cursorPosition.left, bottom: cursorPosition.bottom }}

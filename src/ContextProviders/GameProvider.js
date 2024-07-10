@@ -20,6 +20,7 @@ export const GameProvider = ({children}) => {
     const [wpm, setWpm] = useState(0); 
     const [acc, setAcc] = useState(0);
     const { updateMetrics } = useFirebase();
+    const [wordsLoading, setWordsLoading] = useState(true);
 
     const calculateResults = () => {
         let correctChars = 0; 
@@ -63,6 +64,7 @@ export const GameProvider = ({children}) => {
     }, [timerRunning]);
 
     useEffect(() => {
+        setWordsLoading(true);
         setIndexArray(Array.from({ length: numWords }, (_, index) => index));
     }, [numWords]); 
 
@@ -84,6 +86,7 @@ export const GameProvider = ({children}) => {
             setTimerRunning(false); 
             setSeconds(0);
             setShowResults(false);
+            setWordsLoading(false);
         })
         .catch(error => console.error(error));
     }
@@ -148,7 +151,8 @@ export const GameProvider = ({children}) => {
                 timerRunning, setTimerRunning, 
                 seconds, setSeconds,
                 showResults, setShowResults,
-                wpm, acc
+                wpm, acc,
+                wordsLoading
             }}
         >
             {children}
