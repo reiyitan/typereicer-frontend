@@ -49,6 +49,12 @@
     background-color: var(--clr-bg-lt-hover);
 }
 
+.word-count-button-active:hover {
+    color: var(--clr-highlight);
+    background-color: var(--clr-bg-lt-hover);
+}
+
+
 .word-count-button-50 {
     right: 0;
     border-top-right-radius: 5px;
