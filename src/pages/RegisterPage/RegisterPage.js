@@ -28,26 +28,7 @@ export const RegisterPage = () => {
         }
         else {
             setWarningMsg("");
-            try {
-                const user = await register(username, email, pass);
-                console.log("registered user:", user);
-            }
-            catch (error) { 
-                switch(error.message) {
-                    case "auth/email-already-in-use":
-                        setWarningMsg("Email already in use");
-                        break;
-                    case "auth/invalid-email":
-                        setWarningMsg("Enter a valid email");
-                        break;
-                    case "auth/weak-password":
-                        setWarningMsg("Password should be at least 6 characters");
-                        break;
-                    default:
-                        setWarningMsg("An unexpected error occurred while signing up");
-                        break;
-                }
-            }
+            register(username, email, pass, setWarningMsg);
         }   
     } 
 
