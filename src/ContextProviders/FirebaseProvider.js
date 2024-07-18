@@ -1,5 +1,5 @@
 import React from "react"; 
-import { useEffect, createContext, useContext } from "react"; 
+import { useState, useEffect, createContext, useContext } from "react"; 
 import { useNavigate, useLocation } from "react-router-dom";
 import { initializeApp } from "firebase/app";
 import { getFirestore } from "firebase/firestore";
@@ -22,17 +22,17 @@ export const db = getFirestore(fbApp);
 const FirebaseContext = createContext();
 
 export const FirebaseProvider = ({ children }) => {
+    const [isLoading, setIsLoading] = useState(true);
     const navigate = useNavigate();
     const location = useLocation();
     useEffect(() => {
         const unsubscribe = onAuthStateChanged(auth, (user) => {
-            if (user && location.pathname !== "/home") {
-                console.log("redirect to home");
+            if (user) {
                 navigate("/home");
             } else if (!user && location.pathname !== "/login" && location.pathname !== "/register") {
-                console.log("redirect to login");
                 navigate("/login");
             }
+            setIsLoading(false);
         });
 
         return unsubscribe;
@@ -58,14 +58,14 @@ export const FirebaseProvider = ({ children }) => {
         });
     }
 
-    const register = async (username, email, password) => {
-        try {
-            const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+    const register = (username, email, password, setWarningMsg) => {
+        setPersistence(auth, browserLocalPersistence)
+        .then(() => {
+            return createUserWithEmailAndPassword(auth, email, password);
+        })
+        .then((userCredential) => {
             const user = userCredential.user;
-            const token = user.stsTokenManager.accessToken;
-            //setToken(token);
-            localStorage.setItem("token", token);
-            await setDoc(doc(db, "users", user.uid), {
+            setDoc(doc(db, "users", user.uid), {
                 username: username,
                 fastest25: 0,
                 fastest25_acc: 0,
@@ -76,12 +76,23 @@ export const FirebaseProvider = ({ children }) => {
                 average_25_wpm: 0,
                 average_50_wpm: 0
             });
-            return user;
-        }
-        catch (error) {
-            console.error(error);
-            throw new Error(error.code);
-        }
+        })
+        .catch((error) => {
+            switch(error.code) {
+                case "auth/email-already-in-use":
+                    setWarningMsg("Email already in use");
+                    break;
+                case "auth/invalid-email":
+                    setWarningMsg("Enter a valid email");
+                    break;
+                case "auth/weak-password":
+                    setWarningMsg("Password should be at least 6 characters");
+                    break;
+                default:
+                    setWarningMsg("An unexpected error occurred while signing up");
+                    break;
+            }
+        });
     }
 
     const updateMetrics = async (wpm, acc, numWords) => {
@@ -130,7 +141,7 @@ export const FirebaseProvider = ({ children }) => {
 
     return (
         <FirebaseContext.Provider value={{auth, login, register, updateMetrics, get25_top10, get50_top10}}>
-            {children}
+            {!isLoading && children}
         </FirebaseContext.Provider>
     );
 }
