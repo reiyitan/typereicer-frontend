@@ -1,8 +1,9 @@
 import React from "react"; 
-import { useState, createContext, useContext } from "react"; 
+import { useEffect, createContext, useContext } from "react"; 
+import { useNavigate, useLocation } from "react-router-dom";
 import { initializeApp } from "firebase/app";
 import { getFirestore } from "firebase/firestore";
-import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, setPersistence, browserLocalPersistence } from "firebase/auth";
+import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, setPersistence, browserLocalPersistence, onAuthStateChanged } from "firebase/auth";
 import { doc, setDoc, getDoc, collection, query, orderBy, limit, where, getDocs } from "firebase/firestore"; 
 
 const firebaseConfig = {
@@ -21,21 +22,40 @@ export const db = getFirestore(fbApp);
 const FirebaseContext = createContext();
 
 export const FirebaseProvider = ({ children }) => {
-    const [token, setToken] = useState(localStorage.getItem("token") || null);
+    const navigate = useNavigate();
+    const location = useLocation();
+    useEffect(() => {
+        const unsubscribe = onAuthStateChanged(auth, (user) => {
+            if (user && location.pathname !== "/home") {
+                console.log("redirect to home");
+                navigate("/home");
+            } else if (!user && location.pathname !== "/login" && location.pathname !== "/register") {
+                console.log("redirect to login");
+                navigate("/login");
+            }
+        });
 
-    const login = async (email, password, setWarningMsg) => {
-        try {
-            const userCredential = await signInWithEmailAndPassword(auth, email, password);
-            const user = userCredential.user; 
-            const token = user.stsTokenManager.accessToken;
-            setToken(token);
-            localStorage.setItem("token", token);
-            return user;
-        }
-        catch (error) {
-            console.error(error);
-            throw new Error(error.code);
-        }
+        return unsubscribe;
+    }, []);
+
+    const login = (email, password, setWarningMsg) => {
+        setPersistence(auth, browserLocalPersistence)
+        .then(() => {
+            return signInWithEmailAndPassword(auth, email, password);
+        })
+        .catch((error) => {
+            switch (error.code) {
+                case "auth/invalid-email":
+                    setWarningMsg("Invalid email");
+                    break;
+                case "auth/invalid-credential":
+                    setWarningMsg("Incorrect email or password");
+                    break;
+                default:
+                    setWarningMsg("An unexpected error occurred while signing in");
+                    break;
+            }
+        });
     }
 
     const register = async (username, email, password) => {
@@ -43,7 +63,7 @@ export const FirebaseProvider = ({ children }) => {
             const userCredential = await createUserWithEmailAndPassword(auth, email, password);
             const user = userCredential.user;
             const token = user.stsTokenManager.accessToken;
-            setToken(token);
+            //setToken(token);
             localStorage.setItem("token", token);
             await setDoc(doc(db, "users", user.uid), {
                 username: username,
@@ -109,7 +129,7 @@ export const FirebaseProvider = ({ children }) => {
     }
 
     return (
-        <FirebaseContext.Provider value={{token, setToken, login, register, updateMetrics, get25_top10, get50_top10}}>
+        <FirebaseContext.Provider value={{auth, login, register, updateMetrics, get25_top10, get50_top10}}>
             {children}
         </FirebaseContext.Provider>
     );
