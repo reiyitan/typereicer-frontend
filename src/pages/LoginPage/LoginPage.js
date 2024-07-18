@@ -3,43 +3,23 @@ import { useState } from "react";
 import "../authpages.css";
 import { TextForm, Button, WarningMessage } from "../../components";
 import { useFirebase } from "../../ContextProviders";
-import { Link, Navigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 
 export const LoginPage = () => {
-    const { token, login } = useFirebase();
+    const { login } = useFirebase();
     const [email, setEmail] = useState("");
     const [pass, setPass] = useState(""); 
     const [warningMsg, setWarningMsg] = useState("");
 
-    const handleLogin = async () => {
+    const handleLogin = () => {
         if (!email || !pass) {
             setWarningMsg("Please fill out all fields");
         }
         else {
             setWarningMsg("");
-            try {
-                const user = await login(email, pass, setWarningMsg);
-                console.log("logged in:", user);
-            }
-            catch (error) {
-                switch (error.message) {
-                    case "auth/invalid-email":
-                        setWarningMsg("Invalid email");
-                        break;
-                    case "auth/invalid-credential":
-                        setWarningMsg("Incorrect email or password");
-                        break;
-                    default:
-                        setWarningMsg("An unexpected error occurred while signing in");
-                        break;
-                }
-            }
+            login(email, pass, setWarningMsg);
         }
     } 
-
-    if (token) {
-        return <Navigate to="/home" />
-    }
 
     return (
         <div className="center-block shadow">
