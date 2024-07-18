@@ -9,8 +9,8 @@ function App() {
     return (
         <>
             <h1 id="page-title">TypeReicer</h1>
-            <FirebaseProvider>
-                <BrowserRouter>
+            <BrowserRouter>
+                <FirebaseProvider>
                     <Routes>
                         <Route path="/" element={<LoginPage />} />
                         <Route path="/login" element={<LoginPage />} />
@@ -24,8 +24,8 @@ function App() {
                             } 
                         />
                     </Routes>
-                </BrowserRouter>
-            </FirebaseProvider>
+                </FirebaseProvider>
+            </BrowserRouter>
         </>
     );
 }
