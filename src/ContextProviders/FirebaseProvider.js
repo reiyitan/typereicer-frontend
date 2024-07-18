@@ -2,8 +2,8 @@ import React from "react";
 import { useState, createContext, useContext } from "react"; 
 import { initializeApp } from "firebase/app";
 import { getFirestore } from "firebase/firestore";
-import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword } from "firebase/auth";
-import { doc, setDoc, getDoc } from "firebase/firestore"; 
+import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, setPersistence, browserLocalPersistence } from "firebase/auth";
+import { doc, setDoc, getDoc, collection, query, orderBy, limit, where, getDocs } from "firebase/firestore"; 
 
 const firebaseConfig = {
     apiKey: process.env.REACT_APP_FIREBASE_API_KEY,
@@ -23,7 +23,7 @@ const FirebaseContext = createContext();
 export const FirebaseProvider = ({ children }) => {
     const [token, setToken] = useState(localStorage.getItem("token") || null);
 
-    const login = async (email, password) => {
+    const login = async (email, password, setWarningMsg) => {
         try {
             const userCredential = await signInWithEmailAndPassword(auth, email, password);
             const user = userCredential.user; 
@@ -90,8 +90,26 @@ export const FirebaseProvider = ({ children }) => {
         }
     }
 
+    const get25_top10 = async () => {
+        const usersRef = collection(db, "users");
+        const q = query(usersRef, where("total_25_completed", ">", 4), orderBy("average_25_wpm", "desc"), limit(10));
+        const qSnapshot = await getDocs(q);
+        let res = []; 
+        qSnapshot.forEach((doc) => res.push(doc.data()));
+        return res;
+    }
+
+    const get50_top10 = async () => {
+        const usersRef = collection(db, "users");
+        const q = query(usersRef, where("total_50_completed", ">", 4), orderBy("average_50_wpm", "desc"), limit(10));
+        const qSnapshot = await getDocs(q);
+        let res = []; 
+        qSnapshot.forEach((doc) => res.push(doc.data()));
+        return res;
+    }
+
     return (
-        <FirebaseContext.Provider value={{token, setToken, login, register, updateMetrics}}>
+        <FirebaseContext.Provider value={{token, setToken, login, register, updateMetrics, get25_top10, get50_top10}}>
             {children}
         </FirebaseContext.Provider>
     );

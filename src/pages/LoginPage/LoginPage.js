@@ -18,7 +18,7 @@ export const LoginPage = () => {
         else {
             setWarningMsg("");
             try {
-                const user = await login(email, pass);
+                const user = await login(email, pass, setWarningMsg);
                 console.log("logged in:", user);
             }
             catch (error) {
