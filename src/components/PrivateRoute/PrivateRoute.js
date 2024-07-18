@@ -5,43 +5,21 @@ import { Navigate } from "react-router-dom";
 import { useFirebase } from "../../ContextProviders";
 
 export const PrivateRoute = ({ children }) => {
-    const { token, setToken } = useFirebase();
-    const [isVerified, setIsVerified] = useState(false);
+    const { auth } = useFirebase();
     const [isLoading, setIsLoading] = useState(true);
+    const [isLoggedIn, setIsLoggedIn] = useState(false);
 
     useEffect(() => {
-        if (token) {
-            fetch("http://localhost:4000/auth/verify", {
-                method: "POST", 
-                headers: {
-                    "Content-Type": "application/json" 
-                },
-                body: JSON.stringify({
-                    token: token
-                })
-            })
-            .then(res => res.json())
-            .then(data => {
-                if (!data.verified) {
-                    localStorage.removeItem("token"); 
-                    setToken(null);
-                    setIsVerified(false);
-                    setIsLoading(false);
-                }
-                else {
-                    setIsVerified(true);
-                    setIsLoading(false);
-                }
-            })
-            .catch(error => {
-                console.error(error);
-                setIsLoading(false);
-            }); 
+        const user = auth.currentUser;
+        if (user) {
+            setIsLoading(false);
+            setIsLoggedIn(true);
         }
         else {
-            setIsLoading(false);
+            setIsLoading(false); 
+            setIsLoggedIn(false);
         }
-    }, [token, setToken]);
+    }, []);
 
     if (isLoading) {
         return (
@@ -50,7 +28,7 @@ export const PrivateRoute = ({ children }) => {
     }
     else {
         return (
-            isVerified ? children : <Navigate to="/login" />
+            isLoggedIn ? children : <Navigate to="/login" />
         );
     }
 } 
