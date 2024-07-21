@@ -45,7 +45,9 @@ export const GameProvider = ({children}) => {
         setWpm(wpm); 
         setAcc(acc);
         setShowResults(true);
-        updateMetrics(wpm, acc, numWords);
+        if (acc >= 70) {
+            updateMetrics(wpm, acc, numWords);
+        }
     }
 
     useEffect(() => {
