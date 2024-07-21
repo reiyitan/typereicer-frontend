@@ -74,7 +74,9 @@ export const FirebaseProvider = ({ children }) => {
                 total_25_completed: 0,
                 total_50_completed: 0,
                 average_25_wpm: 0,
-                average_50_wpm: 0
+                average_25_acc: 0,
+                average_50_wpm: 0,
+                average_50_acc: 0
             });
         })
         .catch((error) => {
@@ -107,17 +109,32 @@ export const FirebaseProvider = ({ children }) => {
             const newFastest = (prevFastest < wpm) ? wpm : prevFastest;
             const prevFastestAcc = data[`fastest${numWords}_acc`];
             const newFastestAcc = (prevFastest < wpm) ? acc : prevFastestAcc;
-            const prevAvg = data[`average_${numWords}_wpm`];
-            const prevTotal = data[`total_${numWords}_completed`];
-            const newAvg = ((prevAvg * prevTotal) + wpm) / (prevTotal + 1); 
+            const prevAvgWpm = data[`average_${numWords}_wpm`];
+            const prevTotalCompleted = data[`total_${numWords}_completed`];
+            const newAvgWpm = ((prevAvgWpm * prevTotalCompleted) + wpm) / (prevTotalCompleted + 1); 
+            const prevAvgAcc = data[`average_${numWords}_acc`];
+            const newAvgAcc = ((prevAvgAcc * prevTotalCompleted) + acc) / (prevTotalCompleted + 1);
             const newMetrics = {
                 ...data,
                 [`fastest${numWords}`]: newFastest,
                 [`fastest${numWords}_acc`]: newFastestAcc,
-                [`average_${numWords}_wpm`]: newAvg,
-                [`total_${numWords}_completed`]: prevTotal + 1
+                [`average_${numWords}_wpm`]: newAvgWpm,
+                [`average_${numWords}_acc`]: newAvgAcc,
+                [`total_${numWords}_completed`]: prevTotalCompleted + 1,
             };
             await setDoc(doc(db, "users", uid), newMetrics);
+        }
+    }
+
+    const get_user_info = async (uid) => {
+        const docRef = doc(db, "users", uid);
+        const docSnap = await getDoc(docRef);
+        if (docSnap.exists()) {
+            const userInfo = docSnap.data();
+            return userInfo; 
+        }
+        else {
+            console.error("Could not fetch user data");
         }
     }
 
@@ -140,7 +157,7 @@ export const FirebaseProvider = ({ children }) => {
     }
 
     return (
-        <FirebaseContext.Provider value={{auth, login, register, updateMetrics, get25_top10, get50_top10}}>
+        <FirebaseContext.Provider value={{auth, login, register, updateMetrics, get_user_info, get25_top10, get50_top10}}>
             {!isLoading && children}
         </FirebaseContext.Provider>
     );
