@@ -73,7 +73,7 @@ const ResultPanel = () => {
             <p className="results-value">{wpm}</p>
             <h1 className="results-category">Accuracy</h1>
             <p className="results-value">{acc}%</p>
-            {acc < 90 && <p id="invalid-test-msg">*Test invalid due to low accuracy</p>}
+            {acc < 70 && <p id="invalid-test-msg">*Test invalid due to low accuracy</p>}
         </div>
     );
 }
@@ -141,6 +141,10 @@ export const TextGame = () => {
         setBlurred(false);
         setGameFocused(true);
         if (inputRef.current) inputRef.current.focus();
+    }
+
+    if (!showResults && wordsLoading) {
+        return <></>;
     }
 
     return (
