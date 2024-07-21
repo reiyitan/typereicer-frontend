@@ -8,3 +8,35 @@
     background-color: var(--clr-bg-lt);
     border-radius: 5px;
 }
+
+#loading-profile-msg {
+    position: absolute; 
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    font-family: Montserrat;
+    color: var(--clr-txt-primary);
+}
+
+#profile-header {
+    font-family: Montserrat;
+    color: var(--clr-txt-primary);
+    font-weight: 550;
+    font-size: 25px;
+}
+
+#profile-header-container {
+    position: relative;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-around;
+    border-bottom: solid 1px var(--clr-txt-primary-hover);
+    height: 64.5px;
+}
+
+#profile-header {
+    font-family: Montserrat;
+    color: var(--clr-txt-primary);
+    font-weight: 550;
+    font-size: 25px;
+}
