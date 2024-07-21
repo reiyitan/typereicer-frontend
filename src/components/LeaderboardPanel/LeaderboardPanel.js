@@ -30,14 +30,28 @@ export const LeaderboardPanel = () => {
             className="shadow"
         >
             <div id="leaderboard-header-container">
-                <h1 id="leaderboard-header">Leaderboard</h1>
+                <h1 id="leaderboard-header">Leaderboards</h1>
             </div>
             <div id="standings-container">
                 <div id="standings-25">
-                    
+                    {
+                        players25.map((playerInfo, index) => (
+                            <Player 
+                                key={index}
+                                playerInfo={playerInfo}
+                            />
+                        ))
+                    }
                 </div>
                 <div id="standings-50">
-
+                    {
+                        players50.map((playerInfo, index) => (
+                            <Player 
+                                key={index}
+                                playerInfo={playerInfo}
+                            />
+                        ))
+                    }
                 </div>
             </div>
         </div>
