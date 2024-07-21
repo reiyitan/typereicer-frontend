@@ -3,10 +3,10 @@ import { useState } from "react";
 import "../authpages.css";
 import { TextForm, Button, WarningMessage } from "../../components";
 import { useFirebase } from "../../ContextProviders";
-import { Link, Navigate } from "react-router-dom"; 
+import { Link } from "react-router-dom"; 
 
 export const RegisterPage = () => {
-    const { token, register } = useFirebase();
+    const { register } = useFirebase();
     const [username, setUsername] = useState("");
     const [email, setEmail] = useState(""); 
     const [pass, setPass] = useState(""); 
@@ -31,10 +31,6 @@ export const RegisterPage = () => {
             register(username, email, pass, setWarningMsg);
         }   
     } 
-
-    if (token) {
-        return <Navigate to="/home" />
-    }
 
     return (
         <div className="center-block shadow">
