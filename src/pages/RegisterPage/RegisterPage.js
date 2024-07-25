@@ -14,12 +14,16 @@ export const RegisterPage = () => {
     const [warningMsg, setWarningMsg] = useState(""); 
 
     const handleRegister = async () => {
-        if (!username || !email || !pass || !confPass) {
+        if (!username.trim() || !email || !pass || !confPass) {
             setWarningMsg("Please fill out all fields");
             return;
         }
-        else if (username.includes(" ")) {
+        else if (username.trim().includes(" ")) {
             setWarningMsg("No spaces allowed in username");
+            return;
+        }
+        else if (username.trim().length > 16) {
+            setWarningMsg("Username must be 1-16 characters long");
             return;
         }
         else if (pass !== confPass) {
