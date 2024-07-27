@@ -3,7 +3,7 @@ import { useState, useEffect, createContext, useContext } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import { initializeApp } from "firebase/app";
 import { getFirestore } from "firebase/firestore";
-import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, setPersistence, browserLocalPersistence, onAuthStateChanged } from "firebase/auth";
+import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, setPersistence, browserLocalPersistence, onAuthStateChanged, signOut } from "firebase/auth";
 import { doc, setDoc, getDoc, collection, query, orderBy, limit, where, getDocs } from "firebase/firestore"; 
 
 const firebaseConfig = {
@@ -55,6 +55,16 @@ export const FirebaseProvider = ({ children }) => {
                     setWarningMsg("An unexpected error occurred while signing in");
                     break;
             }
+        });
+    }
+
+    const signout = () => {
+        signOut(auth)
+        .then(() => {
+            navigate("/login");
+        })
+        .catch((error) => {
+            console.error(error);
         });
     }
 
@@ -131,7 +141,22 @@ export const FirebaseProvider = ({ children }) => {
         const docSnap = await getDoc(docRef);
         if (docSnap.exists()) {
             const userInfo = docSnap.data();
-            return userInfo; 
+            const wpm25 = userInfo.average_25_wpm; 
+            const total25 = userInfo.total_25_completed; 
+            const wpm50 = userInfo.average_50_wpm; 
+            const total50 = userInfo.total_50_completed; 
+            const weightedAvgWpm = (total25 + total50 > 0) ? ((wpm25 * total25) + (wpm50 * total50)) / (total25 + total50) : 0;
+            const rank = Math.min(Math.floor(weightedAvgWpm / 10), 16);
+
+            const acc25 = userInfo.average_25_acc;
+            const acc50 = userInfo.average_50_acc;
+            const weightedAvgAcc = (total25 + total50 > 0) ? ((acc25 * total25) + (acc50 * total50)) / (total25 + total50) : 0;
+            return {
+                ...userInfo,
+                "weightedAvgWpm": weightedAvgWpm,
+                "weightedAvgAcc": weightedAvgAcc,
+                "rank": rank
+            };
         }
         else {
             console.error("Could not fetch user data");
@@ -157,7 +182,7 @@ export const FirebaseProvider = ({ children }) => {
     }
 
     return (
-        <FirebaseContext.Provider value={{auth, login, register, updateMetrics, get_user_info, get25_top10, get50_top10}}>
+        <FirebaseContext.Provider value={{auth, login, register, signout, updateMetrics, get_user_info, get25_top10, get50_top10}}>
             {!isLoading && children}
         </FirebaseContext.Provider>
     );
