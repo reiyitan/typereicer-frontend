@@ -18,13 +18,6 @@
     color: var(--clr-txt-primary);
 }
 
-#profile-header {
-    font-family: Montserrat;
-    color: var(--clr-txt-primary);
-    font-weight: 550;
-    font-size: 25px;
-}
-
 #profile-header-container {
     position: relative;
     display: flex;
@@ -39,4 +32,75 @@
     color: var(--clr-txt-primary);
     font-weight: 550;
     font-size: 25px;
+}
+
+#profile-info-container {
+    height: 435.5px;
+    display: grid;
+    grid-template-columns: 40% 60%;
+}
+
+#profile-stats {
+    border-right: solid var(--clr-txt-primary);
+    border-width: 1px;
+}
+
+.profile-stat-container {
+    display: grid;
+    grid-template-columns: 62.5% 37.5%;
+    width: 100%;
+}
+
+.profile-info-category {
+    font-family: Montserrat;
+    color: var(--clr-txt-primary);
+    font-size: 15px;
+    margin-left: 15px;
+}
+
+.profile-info-stat {
+    font-family: Montserrat;
+    color: var(--clr-txt-primary);
+    font-size: 15px;
+}
+
+#profile-rank {
+    position: relative;
+}
+
+#profile-rank-img-title {
+    position: absolute;
+    left: 50%;
+    top: 20px;
+    transform: translateX(-50%);
+    font-family: Montserrat;
+    color: var(--clr-txt-primary);
+    font-size: 15px;
+}
+
+#profile-rank-img {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    border-radius: 5px;
+}
+
+#sign-out-button {
+    position: relative;
+    background-color: var(--clr-txt-red);
+    border: none;
+    border-radius: 5px;
+    font-family: Montserrat;
+    margin-top: 20px;
+    height: 35px;
+    width: 100%;
+    color: var(--clr-txt-primary);
+    font-size: 15px;
+    transition: background-color ease 0.3s, color ease 0.3s
+}
+
+#sign-out-button:hover {
+    background-color: var(--clr-txt-red-hover); 
+    color: var(--clr-txt-primary-hover);
 }
