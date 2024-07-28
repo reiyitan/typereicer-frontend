@@ -123,9 +123,9 @@ export const TextGame = () => {
     useEffect(() => {
         const handleClick = (event) => {
             if (
-                !containerRef.current.contains(event.target) 
-                && !buttonRef.current.contains(event.target) 
-                && !controlsRef.current.contains(event.target)
+                (containerRef.current && !containerRef.current.contains(event.target)) 
+                && (buttonRef.current && !buttonRef.current.contains(event.target))
+                && (controlsRef.current && !controlsRef.current.contains(event.target))
             ) setBlurred(true);
             else if (inputRef.current) inputRef.current.focus();
         }
@@ -141,10 +141,6 @@ export const TextGame = () => {
         setBlurred(false);
         setGameFocused(true);
         if (inputRef.current) inputRef.current.focus();
-    }
-
-    if (!showResults && wordsLoading) {
-        return <></>;
     }
 
     return (
