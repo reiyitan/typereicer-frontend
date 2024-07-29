@@ -37,7 +37,7 @@ export const ProfilePanel = () => {
                 <div id="profile-stats">
                     <div className="profile-stat-container">
                         <p className="profile-info-category">Overall wpm</p>
-                        <p className="profile-info-stat">{userInfo.weightedAvgWpm.toFixed(2)} ({userInfo.weightedAvgAcc.toFixed(2)}%)</p>
+                        <p className="profile-info-stat">{userInfo.average_overall_wpm.toFixed(2)} ({userInfo.average_overall_acc.toFixed(2)}%)</p>
                     </div>
                     <div className="profile-stat-container">
                         <p className="profile-info-category">Average wpm (25)</p>

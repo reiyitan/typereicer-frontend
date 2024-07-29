@@ -37,7 +37,7 @@
 #profile-info-container {
     height: 435.5px;
     display: grid;
-    grid-template-columns: 40% 60%;
+    grid-template-columns: 45% 55%;
 }
 
 #profile-stats {
@@ -70,12 +70,12 @@
 
 #profile-rank-img-title {
     position: absolute;
-    left: 50%;
     top: 20px;
-    transform: translateX(-50%);
     font-family: Montserrat;
     color: var(--clr-txt-primary);
     font-size: 15px;
+    width: 100%;
+    text-align: center;
 }
 
 #profile-rank-img {
