@@ -22,7 +22,7 @@ export const RegisterPage = () => {
             setWarningMsg("No spaces allowed in username");
             return;
         }
-        else if (username.trim().length > 16) {
+        else if (username.trim().length > 16 || username.trim().length < 1) {
             setWarningMsg("Username must be 1-16 characters long");
             return;
         }
