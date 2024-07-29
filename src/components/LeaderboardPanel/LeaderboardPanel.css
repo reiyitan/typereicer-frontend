@@ -11,33 +11,99 @@
 
 #leaderboard-header-container {
     position: relative;
-    display: flex;
-    flex-direction: row;
-    justify-content: space-around;
     border-bottom: solid 1px var(--clr-txt-primary-hover);
-    height: 64.5px;
 }
 
 #leaderboard-header {
+    position: relative;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 200px;
     font-family: Montserrat;
     color: var(--clr-txt-primary);
     font-weight: 550;
     font-size: 25px;
+    text-align: center;
+}
+
+#leaderboard-button-container {
+    position: relative;
+    left: 50%;
+    width: 300px;
+    transform: translateX(-50%);
+}
+
+.leaderboard-button {
+    border: none;
+    font-family: Montserrat;
+    color: var(--clr-txt-primary);
+    height: 30px;
+    width: 100px;
+    transition: background-color 0.4s ease, color 0.4s ease;
+}
+
+.leaderboard-button-active {
+    background-color: rgb(110, 110, 110);
+    color: var(--clr-txt-primary-hover);
+}
+
+.leaderboard-button-inactive {
+    background-color: rgb(150, 150, 150);
+}
+
+.leaderboard-button-inactive:hover {
+    background-color: rgb(110, 110, 110);
+    color: var(--clr-txt-primary-hover);
+}
+
+#leaderboard-button-25 {
+    border-top-left-radius: 5px;
+}
+
+#leaderboard-button-overall {
+    border-top-right-radius: 5px;
 }
 
 #standings-container {
-    height: 435.5px;
+    position: absolute;
+    width: 100%;
+    height: 100%;
+}
+
+#standings {
+    margin-left: 40px;
+    margin-right: 40px;
+}
+
+#standings-category-header {
     display: grid;
-    grid-template-columns: 50% 50%;
+    grid-template-columns: 30px 3fr 1fr 1fr;
+    font-family: Montserrat;
+    color: var(--clr-txt-primary);
+    border-bottom: solid;
+    border-width: 1px;
 }
 
-#standings-25 {
-    height: 100%;
-    border-bottom-left-radius: 5px;
-    border-right: solid 1px var(--clr-txt-primary-hover);
+.standings-category {
+    font-size: 13px;
+    font-weight: 600;
 }
 
-#standings-50 {
-    height: 100%;
-    border-bottom-right-radius: 5px;
+#no-standings-div {
+    font-family: Montserrat; 
+    color: var(--clr-txt-primary);
+    position: absolute;
+    left: 50%;
+    margin-top: 10px;
+    transform: translateX(-50%);
+}   
+
+.player-standing {
+    display: grid;
+    font-family: Montserrat;
+    color: var(--clr-txt-primary);
+    font-size: 20px;
+    grid-template-columns: 30px 3fr 1fr 1fr;
+    margin-top: 10px;
+    margin-bottom: 10px;
 }
