@@ -83,10 +83,14 @@ export const FirebaseProvider = ({ children }) => {
                 fastest50_acc: 0,
                 total_25_completed: 0,
                 total_50_completed: 0,
+                total_completed: 0,
                 average_25_wpm: 0,
                 average_25_acc: 0,
                 average_50_wpm: 0,
-                average_50_acc: 0
+                average_50_acc: 0,
+                average_overall_wpm: 0,
+                average_overall_acc: 0,
+                rank: 0
             });
         })
         .catch((error) => {
@@ -115,6 +119,8 @@ export const FirebaseProvider = ({ children }) => {
         const docSnap = await getDoc(docRef);
         if (docSnap.exists()) {
             const data = docSnap.data();
+
+            //mode-specific
             const prevFastest = data[`fastest${numWords}`];
             const newFastest = (prevFastest < wpm) ? wpm : prevFastest;
             const prevFastestAcc = data[`fastest${numWords}_acc`];
@@ -124,6 +130,18 @@ export const FirebaseProvider = ({ children }) => {
             const newAvgWpm = ((prevAvgWpm * prevTotalCompleted) + wpm) / (prevTotalCompleted + 1); 
             const prevAvgAcc = data[`average_${numWords}_acc`];
             const newAvgAcc = ((prevAvgAcc * prevTotalCompleted) + acc) / (prevTotalCompleted + 1);
+
+            //overall
+            const thisTotal = (numWords === 25) ? data[`total_25_completed`] + 1 : data[`total_50_completed`] + 1;
+            const otherTotal = (numWords === 25) ? data[`total_50_completed`] : data[`total_25_completed`];
+            const otherAvgWpm = (numWords === 25) ? data[`average_50_wpm`] : data[`average_25_wpm`];
+            const newAvgOverallWpm = ((newAvgWpm * thisTotal) + (otherAvgWpm * otherTotal)) / (thisTotal + otherTotal);
+
+            const otherAvgAcc = (numWords === 25) ? data[`average_50_acc`] : data[`average_25_acc`];
+            const newAvgOverallAcc = ((newAvgAcc * thisTotal) + (otherAvgAcc * otherTotal)) / (thisTotal + otherTotal);
+
+            const newRank = Math.min(Math.floor(newAvgOverallWpm / 10), 16);
+
             const newMetrics = {
                 ...data,
                 [`fastest${numWords}`]: newFastest,
@@ -131,6 +149,10 @@ export const FirebaseProvider = ({ children }) => {
                 [`average_${numWords}_wpm`]: newAvgWpm,
                 [`average_${numWords}_acc`]: newAvgAcc,
                 [`total_${numWords}_completed`]: prevTotalCompleted + 1,
+                "total_completed": thisTotal + otherTotal,
+                [`average_overall_wpm`]: newAvgOverallWpm,
+                [`average_overall_acc`]: newAvgOverallAcc,
+                "rank": newRank
             };
             await setDoc(doc(db, "users", uid), newMetrics);
         }
@@ -141,22 +163,7 @@ export const FirebaseProvider = ({ children }) => {
         const docSnap = await getDoc(docRef);
         if (docSnap.exists()) {
             const userInfo = docSnap.data();
-            const wpm25 = userInfo.average_25_wpm; 
-            const total25 = userInfo.total_25_completed; 
-            const wpm50 = userInfo.average_50_wpm; 
-            const total50 = userInfo.total_50_completed; 
-            const weightedAvgWpm = (total25 + total50 > 0) ? ((wpm25 * total25) + (wpm50 * total50)) / (total25 + total50) : 0;
-            const rank = Math.min(Math.floor(weightedAvgWpm / 10), 16);
-
-            const acc25 = userInfo.average_25_acc;
-            const acc50 = userInfo.average_50_acc;
-            const weightedAvgAcc = (total25 + total50 > 0) ? ((acc25 * total25) + (acc50 * total50)) / (total25 + total50) : 0;
-            return {
-                ...userInfo,
-                "weightedAvgWpm": weightedAvgWpm,
-                "weightedAvgAcc": weightedAvgAcc,
-                "rank": rank
-            };
+            return userInfo;
         }
         else {
             console.error("Could not fetch user data");
@@ -168,7 +175,14 @@ export const FirebaseProvider = ({ children }) => {
         const q = query(usersRef, where("total_25_completed", ">", 4), orderBy("average_25_wpm", "desc"), limit(10));
         const qSnapshot = await getDocs(q);
         let res = []; 
-        qSnapshot.forEach((doc) => res.push(doc.data()));
+        qSnapshot.forEach((doc) => {
+            const userInfo = doc.data(); 
+            res.push({
+                "username": userInfo.username,
+                "average_wpm": userInfo.average_25_wpm,
+                "average_acc": userInfo.average_25_acc
+            });
+        });
         return res;
     }
 
@@ -177,12 +191,35 @@ export const FirebaseProvider = ({ children }) => {
         const q = query(usersRef, where("total_50_completed", ">", 4), orderBy("average_50_wpm", "desc"), limit(10));
         const qSnapshot = await getDocs(q);
         let res = []; 
-        qSnapshot.forEach((doc) => res.push(doc.data()));
+        qSnapshot.forEach((doc) => {
+            const userInfo = doc.data(); 
+            res.push({
+                "username": userInfo.username,
+                "average_wpm": userInfo.average_50_wpm,
+                "average_acc": userInfo.average_50_acc
+            });
+        });
         return res;
     }
 
+    const get_overall_top10 = async () => {
+        const usersRef = collection(db, "users"); 
+        const q = query(usersRef, where("total_completed", ">", 4), orderBy("average_overall_wpm", "desc"), limit(10));
+        const qSnapshot = await getDocs(q); 
+        let res = []; 
+        qSnapshot.forEach((doc) => {
+            const userInfo = doc.data(); 
+            res.push({
+                "username": userInfo.username,
+                "average_wpm": userInfo.average_overall_wpm,
+                "average_acc": userInfo.average_overall_acc
+            });
+        });
+        return res; 
+    }
+
     return (
-        <FirebaseContext.Provider value={{auth, login, register, signout, updateMetrics, get_user_info, get25_top10, get50_top10}}>
+        <FirebaseContext.Provider value={{auth, login, register, signout, updateMetrics, get_user_info, get25_top10, get50_top10, get_overall_top10}}>
             {!isLoading && children}
         </FirebaseContext.Provider>
     );
