@@ -32,7 +32,7 @@ export const RegisterPage = () => {
         }
         else {
             setWarningMsg("");
-            register(username, email, pass, setWarningMsg);
+            await register(username, email, pass, setWarningMsg);
         }   
     } 
 

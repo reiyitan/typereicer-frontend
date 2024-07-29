@@ -68,7 +68,14 @@ export const FirebaseProvider = ({ children }) => {
         });
     }
 
-    const register = (username, email, password, setWarningMsg) => {
+    const register = async (username, email, password, setWarningMsg) => {
+        const docRef = doc(db, "usernames", username); 
+        const docSnap = await getDoc(docRef); 
+        if (docSnap.exists()) {
+            setWarningMsg("Username taken"); 
+            return;
+        }
+
         setPersistence(auth, browserLocalPersistence)
         .then(() => {
             return createUserWithEmailAndPassword(auth, email, password);
@@ -92,6 +99,7 @@ export const FirebaseProvider = ({ children }) => {
                 average_overall_acc: 0,
                 rank: 0
             });
+            setDoc(doc(db, "usernames", username), {});
         })
         .catch((error) => {
             switch(error.code) {
