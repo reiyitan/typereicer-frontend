@@ -14,6 +14,6 @@ export const rank_enum = {
     12: "Sneeze",
     13: "Fastball",
     14: "Sammie running" ,
-    15: "Rei typing",
+    15: "Rei coding",
     16: "TypeReicer"
 };
