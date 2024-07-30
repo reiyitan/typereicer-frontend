@@ -76,15 +76,43 @@
     font-size: 15px;
     width: 100%;
     text-align: center;
+    padding-left: 10px;
+    padding-right: 10px;
 }
 
 #profile-rank-img {
+    border-radius: 5px;
+}
+
+.tooltip-wrapper {
     position: absolute;
     left: 50%;
     top: 50%;
     transform: translate(-50%, -50%);
-    border-radius: 5px;
+    z-index: 1;
 }
+
+.tooltip {
+    position: absolute;
+    font-family: Montserrat; 
+    color: var(--clr-txt-primary);
+    transition: opacity ease 0.5s;
+    background-color: rgb(30, 30, 30);
+    border-radius: 5px;
+    padding: 20px;
+    font-size: 13px;
+    text-align: center;
+    width: 200px;
+    z-index: 1;
+}
+.tooltip-hidden {
+    opacity: 0;
+}
+
+.tooltip-visible {
+    opacity: 1;
+}
+
 
 #sign-out-button {
     position: relative;
@@ -97,7 +125,8 @@
     width: 100%;
     color: var(--clr-txt-primary);
     font-size: 15px;
-    transition: background-color ease 0.3s, color ease 0.3s
+    transition: background-color ease 0.3s, color ease 0.3s;
+    z-index: 0;
 }
 
 #sign-out-button:hover {

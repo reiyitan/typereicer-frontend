@@ -1,9 +1,43 @@
 import React from "react"; 
-import { useState, useEffect } from "react"; 
+import { useState, useEffect, useRef } from "react"; 
 import { useFirebase } from "../../ContextProviders";
 import "./ProfilePanel.css"; 
-import { rank_enum } from "../../utils";
+import { rank_enum, desc_enum } from "../../utils";
 import { rankSources } from "../../assets";
+
+const ToolTip = ({children, desc}) => {
+    const [visible, setVisible] = useState(false); 
+    const [position, setPosition] = useState({x: 0, y: 0});
+    const containerRef = useRef(null);
+    const toolTipRef = useRef(null);
+
+    const handleMouseMove = (e) => {
+        if (containerRef.current && toolTipRef.current) {
+            const containerRect = containerRef.current.getBoundingClientRect();
+            const toolTipRect = toolTipRef.current.getBoundingClientRect();
+            setPosition({x: e.clientX - containerRect.left - toolTipRect.width, y: e.clientY - containerRect.top - toolTipRect.height});
+        }
+    }
+
+    return (
+        <div 
+            className="tooltip-wrapper"
+            onMouseEnter={() => setVisible(true)}
+            onMouseLeave={() => setVisible(false)}
+            onMouseMove={handleMouseMove}
+            ref={containerRef}
+        >
+            <div
+                className={visible ? "tooltip tooltip-visible" : "tooltip tooltip-hidden"}
+                style={{left: position.x, top: position.y}}
+                ref={toolTipRef}
+            >
+                {desc}
+            </div>
+            {children}
+        </div>
+    );
+}
 
 export const ProfilePanel = () => {
     const [userInfo, setUserInfo] = useState(null);
@@ -65,8 +99,10 @@ export const ProfilePanel = () => {
                     </div>
                 </div>
                 <div id="profile-rank">
-                    <p id="profile-rank-img-title">TypeReicer rank: {rank_enum[userInfo.rank]}</p>
-                    <img id="profile-rank-img" src={rankSources[userInfo.rank]} alt="rank-img" />
+                    <p id="profile-rank-img-title">TypeReicer rank: {rank_enum[3]}</p>
+                    <ToolTip desc={desc_enum[3]}>
+                        <img id="profile-rank-img" src={rankSources[3]} alt="rank-img" />
+                    </ToolTip>
                 </div>
             </div>
             <div id="sign-out-button-container">
