@@ -82,6 +82,7 @@
     color: var(--clr-txt-primary);
     border-bottom: solid;
     border-width: 1px;
+    margin-top: 15px;
 }
 
 .standings-category {
