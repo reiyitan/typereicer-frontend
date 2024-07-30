@@ -17,6 +17,7 @@ const PlayerStanding = ({playerInfo, position}) => {
 export const LeaderboardPanel = () => {
     const { get25_top10, get50_top10, get_overall_top10 } = useFirebase();
     const [standings, setStandings] = useState([]);
+    const [isLoading, setIsLoading] = useState(true);
     const [mode, setMode] = useState("25");
 
     useEffect(() => {
@@ -24,12 +25,15 @@ export const LeaderboardPanel = () => {
             switch (mode) {
                 case "25":
                     setStandings(await get25_top10());
+                    setIsLoading(false);
                     break; 
                 case "50": 
                     setStandings(await get50_top10());
+                    setIsLoading(false);
                     break; 
                 case "overall": 
                     setStandings(await get_overall_top10());
+                    setIsLoading(false);
                     break;
             }
         }
@@ -37,7 +41,8 @@ export const LeaderboardPanel = () => {
     }, [mode]);
 
     const handleClick = (newMode) => {
-        if (mode === newMode) return; 
+        if (mode === newMode) return;
+        setIsLoading(true);
         setMode(newMode);
     }
 
@@ -80,8 +85,10 @@ export const LeaderboardPanel = () => {
                         <span className="standings-category">avg acc</span>
                     </div>
                     {
-                        standings.length === 0
-                        ? <div id="no-standings-div">No standings for this mode yet</div>
+                        isLoading 
+                        ? <div id="no-standings-div">Loading...</div>
+                        : standings.length === 0
+                        ? <div id="no-standings-div">No standings for this category yet</div>
                         : standings.map((playerInfo, index) => (
                             <PlayerStanding
                                 key={index}
