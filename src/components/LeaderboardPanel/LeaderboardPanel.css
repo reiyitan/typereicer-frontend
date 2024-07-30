@@ -108,3 +108,13 @@
     margin-top: 10px;
     margin-bottom: 10px;
 }
+
+.this-player-standing {
+    display: grid;
+    font-family: Montserrat;
+    color: var(--clr-highlight);
+    font-size: 20px;
+    grid-template-columns: 30px 3fr 1fr 1fr;
+    margin-top: 10px;
+    margin-bottom: 10px;
+}

@@ -3,9 +3,9 @@ import { useEffect, useState } from "react";
 import "./LeaderboardPanel.css"; 
 import { useFirebase } from "../../ContextProviders";
 
-const PlayerStanding = ({playerInfo, position}) => {
+const PlayerStanding = ({playerInfo, position, thisUsername}) => {
     return (
-        <div className="player-standing">
+        <div className={playerInfo.username === thisUsername ? "this-player-standing" : "player-standing"}>
             <span>{position}.</span>
             <span>{playerInfo.username}</span>
             <span>{playerInfo.average_wpm.toFixed(2)}</span>
@@ -15,10 +15,19 @@ const PlayerStanding = ({playerInfo, position}) => {
 }
 
 export const LeaderboardPanel = () => {
-    const { get25_top10, get50_top10, get_overall_top10 } = useFirebase();
+    const { auth, get25_top10, get50_top10, get_overall_top10, get_user_info } = useFirebase();
     const [standings, setStandings] = useState([]);
     const [isLoading, setIsLoading] = useState(true);
+    const [thisUsername, setThisUsername] = useState("");
     const [mode, setMode] = useState("25");
+
+    useEffect(() => {
+        const getUsername = async () => {
+            const userInfo = await get_user_info(auth.currentUser.uid);
+            setThisUsername(userInfo.username);
+        }
+        getUsername();
+    }, []);
 
     useEffect(() => {
         const fetchData = async () => {
@@ -94,6 +103,7 @@ export const LeaderboardPanel = () => {
                                 key={index}
                                 playerInfo={playerInfo}
                                 position={index + 1}
+                                thisUsername={thisUsername}
                             />
                         ))
                     }
