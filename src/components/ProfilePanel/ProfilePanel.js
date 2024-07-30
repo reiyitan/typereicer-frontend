@@ -99,9 +99,9 @@ export const ProfilePanel = () => {
                     </div>
                 </div>
                 <div id="profile-rank">
-                    <p id="profile-rank-img-title">TypeReicer rank: {rank_enum[3]}</p>
-                    <ToolTip desc={desc_enum[3]}>
-                        <img id="profile-rank-img" src={rankSources[3]} alt="rank-img" />
+                    <p id="profile-rank-img-title">TypeReicer rank: {rank_enum[userInfo.rank]}</p>
+                    <ToolTip desc={desc_enum[userInfo.rank]}>
+                        <img id="profile-rank-img" src={rankSources[userInfo.rank]} alt="rank-img" />
                     </ToolTip>
                 </div>
             </div>
